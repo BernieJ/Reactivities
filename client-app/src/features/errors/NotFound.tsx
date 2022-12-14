@@ -1,6 +1,4 @@
-import React from 'react'
 import { Button, Header, Icon, Segment } from 'semantic-ui-react'
-import axios from 'axios'
 import { Link } from 'react-router-dom'
 
 export default function NotFound() {
