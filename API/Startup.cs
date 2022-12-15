@@ -21,6 +21,8 @@ using API.Extensions;
 using FluentValidation.AspNetCore;
 using FluentValidation;
 using API.Middleware;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc.Authorization;
 
 namespace API
 {
@@ -39,10 +41,15 @@ namespace API
     public void ConfigureServices(IServiceCollection services)
     {
 
-      services.AddControllers();
+      services.AddControllers(opt =>
+      {
+        var policy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
+        opt.Filters.Add(new AuthorizeFilter(policy));
+      });
       services.AddFluentValidationAutoValidation();
       services.AddValidatorsFromAssemblyContaining<Create>();
       services.AddApplicationServices(_config, corsPolicy);
+      services.AddIdentityServices(_config);
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -62,6 +69,8 @@ namespace API
       app.UseRouting();
 
       app.UseCors(corsPolicy);
+
+      app.UseAuthentication();
       app.UseAuthorization();
 
       app.UseEndpoints(endpoints =>
