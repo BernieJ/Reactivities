@@ -46,8 +46,7 @@ namespace API
         var policy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
         opt.Filters.Add(new AuthorizeFilter(policy));
       });
-      services.AddFluentValidationAutoValidation();
-      services.AddValidatorsFromAssemblyContaining<Create>();
+
       services.AddApplicationServices(_config, corsPolicy);
       services.AddIdentityServices(_config);
     }
