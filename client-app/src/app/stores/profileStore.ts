@@ -1,7 +1,7 @@
 import { runInAction, configure, makeAutoObservable } from "mobx";
 import agent from "../api/agent";
 
-import { Photo, Profile } from "../models/profile";
+import { Photo, Profile, ProfileFormValues } from "../models/profile";
 import { store } from "./store";
 
 configure({
@@ -13,6 +13,7 @@ export default class ProfileStore {
     loadingProfile = false;
     uploading = false;
     loading = false;
+    editMode = false;
 
     constructor() {
         makeAutoObservable(this);
@@ -90,8 +91,7 @@ export default class ProfileStore {
         this.loading = true;
         try {
             await agent.Profiles.deletePhoto(photo.id);
-
-            
+      
             runInAction(() => {
                 if(this.profile && this.profile.photos) {
 
@@ -104,5 +104,28 @@ export default class ProfileStore {
             console.log(error);
             runInAction(() => this.loading = false)
         }
+    }
+
+    updateProfile = async (profileFormValues:ProfileFormValues) => {
+        this.loading = true;
+
+        try {
+            await agent.Profiles.updateProfile(profileFormValues);
+
+            runInAction(() => {
+                if (this.profile) {
+                    let updatedProfile = {...this.profile, ...profileFormValues};
+
+                    this.profile = updatedProfile;
+                }
+            });
+        } catch (error) {
+            console.log(error);
+            runInAction(() => this.loading = false)
+        }
+    }
+
+    toggleEditMode = () => {
+        this.editMode = !this.editMode;
     }
 }

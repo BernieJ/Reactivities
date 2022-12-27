@@ -16,6 +16,21 @@ export class Profile implements Profile {
     }
 }
 
+export class ProfileFormValues {
+    username: string = '';
+    displayName: string = '';
+    bio : string | undefined = '';
+    
+
+    constructor(profile: Profile) {
+        if (profile) {
+            this.username = profile.username;
+            this.displayName = profile.displayName;
+            this.bio = profile.bio;
+        }
+    }
+} 
+
 export interface Photo {
     id: string;
     url : string;
